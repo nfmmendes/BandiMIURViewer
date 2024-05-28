@@ -46,7 +46,7 @@ def resultArea(idArea):
 
     rows = [[replace_all(str(p), REPLACEMENTS)] for p in paragraphs]
 
-    with open("Editais.csv", "w", newline="") as f:
+    with open("Editais.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f, escapechar=" ", quoting=csv.QUOTE_NONE)
         writer.writerow(
             ["Prazo ;  Universidade ; Link ; Titulo ; Area ; Numero de Vagas"]

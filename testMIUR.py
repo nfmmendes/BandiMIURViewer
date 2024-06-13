@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
+import re
 
 app = Flask(__name__)
 
@@ -28,6 +29,27 @@ REPLACEMENTS = {
 
 app.config["RESULT_STATIC_PATH"] = "/wwwroot"
 
+def merge_areas(s):
+    pattern = re.compile(r"[;][\s]+[A-Z]{3}\/[0-9]{2}")
+    result = pattern.search(s)
+    
+    if result == None:
+        last = s.rfind(';')
+        s = s[:last] + '; ;' + s[last+1: ]
+        return s
+    
+    index = result.span()
+    
+    result = pattern.search(s, index[1])
+    
+    while result != None :
+        index = result.span()
+        s = s[:index[0]] + ' ' + s[index[0]+1:]
+        result = pattern.search(s, index[1])
+        if result != None:
+            index = result.span()
+    
+    return s
 
 def replace_all(text, replacements):
     for old, new in replacements.items():
@@ -51,6 +73,10 @@ def resultArea(idArea):
         writer.writerow(
             ["Prazo ;  Universidade ; Link ; Titulo ; Area ; Numero de Vagas"]
         )
+        for index, row in enumerate(rows):
+            print(row)
+            rows[index][0] = merge_areas(row[0])
+            rows[index][0] = rows[index][0].replace("\"", "'")
         writer.writerows(rows)
 
     return send_file("Editais.csv", as_attachment=True)

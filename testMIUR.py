@@ -74,7 +74,6 @@ def resultArea(idArea):
             ["Prazo ;  Universidade ; Link ; Titulo ; Area ; Numero de Vagas"]
         )
         for index, row in enumerate(rows):
-            print(row)
             rows[index][0] = merge_areas(row[0])
             rows[index][0] = rows[index][0].replace("\"", "'")
         writer.writerows(rows)
